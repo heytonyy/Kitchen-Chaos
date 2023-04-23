@@ -11,8 +11,7 @@ public class PlayerAnimator : MonoBehaviour
     // from animator parameters.
     private const string IS_WALKING = "IsWalking";
 
-    [SerializeField]
-    private Player player;
+    [SerializeField] private Player player;
     private Animator animator;
 
     private void Awake()

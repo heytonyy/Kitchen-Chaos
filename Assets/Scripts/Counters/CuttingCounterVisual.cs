@@ -10,8 +10,7 @@ public class CuttingCounterVisual : MonoBehaviour
 {
     private const string CUT = "Cut";
 
-    [SerializeField]
-    private CuttingCounter cuttingCounter;
+    [SerializeField] private CuttingCounter cuttingCounter;
     private Animator animator;
 
     private void Awake()

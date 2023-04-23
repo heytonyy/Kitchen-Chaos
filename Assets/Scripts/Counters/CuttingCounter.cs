@@ -1,7 +1,6 @@
 //------------------------------------------------------------------------------
 // Cutting Counter Script:
 //------------------------------------------------------------------------------
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +51,13 @@ public class CuttingCounter : BaseCounter, IHasProgress
         {
             if (player.HasKitchenObject()) // the player is carrying a kitchen object
             {
-                // cant pick up another object.
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) // the player is carrying a plate.
+                {
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    }
+                }
             }
             else // the player is not carying anything
             {
@@ -73,9 +78,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             OnCut?.Invoke(this, EventArgs.Empty);
 
             // get the cutting recipe for the input kitchen object.
-            CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(
-                GetKitchenObject().GetKitchenObjectSO()
-            );
+            CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
             OnProgressChanged?.Invoke(
                 this,
@@ -89,9 +92,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             if (cuttingProgress >= cuttingRecipeSO.cuttingProgressMax)
             {
                 // output is the slices of the input kitchen object.
-                KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(
-                    GetKitchenObject().GetKitchenObjectSO()
-                );
+                KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
 
                 // destroy it and spawn the output.
                 GetKitchenObject().DestroySelf();

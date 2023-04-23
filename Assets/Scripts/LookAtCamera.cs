@@ -17,8 +17,7 @@ public class LookAtCamera : MonoBehaviour
         CameraForwardInverted,
     }
 
-    [SerializeField]
-    private Mode mode;
+    [SerializeField] private Mode mode;
 
     // LateUpdate executes after Update (useful when you want to make sure something updates before you do something)
     private void LateUpdate()

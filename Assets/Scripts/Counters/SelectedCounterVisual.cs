@@ -8,12 +8,10 @@ using UnityEngine;
 public class SelectedCounterVisual : MonoBehaviour
 {
     // selected counter to watch.
-    [SerializeField]
-    private BaseCounter baseCounter;
+    [SerializeField] private BaseCounter baseCounter;
 
     // selected counter visual game object.
-    [SerializeField]
-    private GameObject[] visualGameObject;
+    [SerializeField] private GameObject[] visualGameObject;
 
     private void Start()
     {
@@ -21,10 +19,7 @@ public class SelectedCounterVisual : MonoBehaviour
     }
 
     // Subscribe to the OnSelectedCounterChanged event.
-    private void Player_OnSelectedCounterChanged(
-        object sender,
-        Player.SelectedCounterChangedEventArgs e
-    )
+    private void Player_OnSelectedCounterChanged(object sender, Player.SelectedCounterChangedEventArgs e)
     {
         if (e.selectedCounter == baseCounter)
         {

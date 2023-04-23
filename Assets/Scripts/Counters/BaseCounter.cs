@@ -1,7 +1,6 @@
 //------------------------------------------------------------------------------
 // Base Counter Script:
 //------------------------------------------------------------------------------
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +9,11 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 {
     private KitchenObject kitchenObject;
 
-    // can use either Transform or GameObject.
-    [SerializeField]
-    private Transform counterTopPoint; // reference point for instantiating kitchenObject.
+    // reference point for instantiating kitchenObject.
+    [SerializeField] private Transform counterTopPoint;
 
-    public virtual void Interact(Player player) // Interact/InteractAlternate methods are overridden in child classes.
+    // Interact/InteractAlternate methods are overridden in child classes.
+    public virtual void Interact(Player player)
     {
         Debug.LogError("BaseCounter.Interact() called!");
     }

@@ -9,21 +9,17 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject hasProgressGameObject;
+    [SerializeField] private GameObject hasProgressGameObject;
     private IHasProgress hasProgress;
 
-    [SerializeField]
-    private Image barImage;
+    [SerializeField] private Image barImage;
 
     private void Start()
     {
         hasProgress = hasProgressGameObject.GetComponent<IHasProgress>();
         if (hasProgress == null)
         {
-            Debug.LogError(
-                "Game Object" + hasProgressGameObject + "does not have IHasProgress component."
-            );
+            Debug.LogError("Game Object" + hasProgressGameObject + "does not have IHasProgress component.");
         }
 
         hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
@@ -33,10 +29,7 @@ public class ProgressBarUI : MonoBehaviour
         Hide();
     }
 
-    private void HasProgress_OnProgressChanged(
-        object sender,
-        IHasProgress.OnProgressChangedEventArgs e
-    )
+    private void HasProgress_OnProgressChanged(object sender, IHasProgress.OnProgressChangedEventArgs e)
     {
         barImage.fillAmount = e.progressNormalized;
 

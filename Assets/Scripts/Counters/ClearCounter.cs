@@ -1,18 +1,16 @@
 //------------------------------------------------------------------------------
 // Clear Counter Script:
 //------------------------------------------------------------------------------
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ClearCounter : BaseCounter
 {
-    // TODO: Do I need this kitchenObjectSO field since Clear Counters will only be getting/returning kitchen objects from the player?
-    [SerializeField]
-    private KitchenObjectSO kitchenObjectSO;
+    [SerializeField] private KitchenObjectSO kitchenObjectSO;
 
-    public override void Interact(Player player) // override Interact() method from BaseCounter.
+    // override Interact() method from BaseCounter.
+    public override void Interact(Player player)
     {
         if (!HasKitchenObject()) // the counter is empty.
         {
@@ -30,7 +28,23 @@ public class ClearCounter : BaseCounter
         {
             if (player.HasKitchenObject()) // the player is carrying a kitchen object
             {
-                // the player cant pick up another object.
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) // the player is carrying a plate.
+                {
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    }
+                }
+                else // player is carrying a kitchen object that is not a plate, try to add it to plate.
+                {
+                    if (GetKitchenObject().TryGetPlate(out plateKitchenObject)) // counter has a plate.
+                    {
+                        if (plateKitchenObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            player.GetKitchenObject().DestroySelf();
+                        }
+                    }
+                }
             }
             else
             {

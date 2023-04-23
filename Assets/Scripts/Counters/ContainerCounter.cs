@@ -11,10 +11,11 @@ public class ContainerCounter : BaseCounter
 {
     public event EventHandler OnPlayerGrabbedObject;
 
-    [SerializeField]
-    private KitchenObjectSO kitchenObjectSO; // type of kitchen object that can be spawned on this counter.
+    // type of kitchen object that can be spawned on this counter.
+    [SerializeField] private KitchenObjectSO kitchenObjectSO;
 
-    public override void Interact(Player player) // override Interact() method from BaseCounter.
+    // override Interact() method from BaseCounter.
+    public override void Interact(Player player)
     {
         if (!player.HasKitchenObject()) // player is not carrying anything
         {

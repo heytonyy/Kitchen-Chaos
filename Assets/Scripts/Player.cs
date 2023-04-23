@@ -9,36 +9,28 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
-    // Singleton pattern (using since only 1 player in scene) -> instance property can use { get; set; } shorthand.
-    public static Player Instance { get; private set; }
-
-    // player input reference.
-    [SerializeField]
-    private GameInput gameInput;
-
-    // BaseCounter -> Counter that player is currently interacting with.
-    private BaseCounter selectedCounter;
-
     // extend EventArgs to pass selectedCounter data -> OnSelectedCounterChanged event.
     public event EventHandler<SelectedCounterChangedEventArgs> OnSelectedCounterChanged;
-
     public class SelectedCounterChangedEventArgs : EventArgs
     {
         public BaseCounter selectedCounter;
     }
 
-    // counter layer mask -> for raycasting groups of counters.
-    [SerializeField]
-    private LayerMask counterLayerMask;
+    // Singleton pattern (using since only 1 player in scene) -> instance property can use { get; set; } shorthand.
+    public static Player Instance { get; private set; }
+    // player input reference.
+    [SerializeField] private GameInput gameInput;
 
     // KitchenObjectHoldPoint -> Transform for holding kitchenObject.
-    [SerializeField]
-    private Transform kitchenObjectHoldPoint;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
     private KitchenObject kitchenObject;
 
-    // can adjust moveSpeed in inspector this way.
-    [SerializeField]
-    private float moveSpeed = 7f;
+    // BaseCounter -> Counter that player is currently interacting with.
+    private BaseCounter selectedCounter;
+    // counter layer mask -> for raycasting groups of counters.
+    [SerializeField] private LayerMask counterLayerMask;
+
+    [SerializeField] private float moveSpeed = 7f;
     private bool isWalking;
     private Vector3 lastInteractDirection;
 
@@ -107,15 +99,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         // Raycast to check if there is a ClearCounter in front of the player.
         float interactDistance = 2f;
         // Raycast hit something
-        if (
-            Physics.Raycast(
-                transform.position,
-                lastInteractDirection,
-                out RaycastHit raycastHit,
-                interactDistance,
-                counterLayerMask
-            )
-        )
+        if (Physics.Raycast(transform.position, lastInteractDirection, out RaycastHit raycastHit, interactDistance, counterLayerMask))
         {
             // Hit a BaseCounter (raycastHit is info about the object that was hit, out is the returned BaseCounter)
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
@@ -137,7 +121,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             SetSelectedCounter(null);
         }
-
         // Debug.Log("Selected counter: " + selectedCounter);
     }
 
@@ -165,15 +148,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             // Attempt only X movement
             Vector3 moveDirectionX = new Vector3(moveDirection.x, 0F, 0f).normalized;
             // moveDirection.x != 0 -> to make player still rotate when moving diagonally
-            canMove =
-                moveDirection.x != 0
-                && !Physics.CapsuleCast(
-                    transform.position,
-                    transform.position + Vector3.up * playerHeight,
-                    playerRadius,
-                    moveDirectionX,
-                    moveDistance
-                );
+            canMove = moveDirection.x != 0
+                && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionX, moveDistance);
 
             if (canMove)
             {
@@ -186,15 +162,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
                 // Attempt only Z movement
                 Vector3 moveDirectionZ = new Vector3(0f, 0F, moveDirection.z);
                 // moveDirection.z != 0 -> to make player still rotate when moving diagonally
-                canMove =
-                    moveDirection.z != 0
-                    && !Physics.CapsuleCast(
-                        transform.position,
-                        transform.position + Vector3.up * playerHeight,
-                        playerRadius,
-                        moveDirectionZ,
-                        moveDistance
-                    );
+                canMove = moveDirection.z != 0
+                    && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionZ, moveDistance);
 
                 if (canMove)
                 {
@@ -219,11 +188,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
         // rotate player to face moveDirection, slerp for smooth rotation (lerp -> linear, slerp -> smooth)
         float rotateSpeed = 10f;
-        transform.forward = Vector3.Slerp(
-            transform.forward,
-            moveDirection,
-            Time.deltaTime * rotateSpeed
-        );
+        transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
     }
 
     // for walking animation in PlayerAnimator.cs
