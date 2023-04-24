@@ -15,6 +15,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     {
         public BaseCounter selectedCounter;
     }
+    public event EventHandler OnPickedSomething;
 
     // Singleton pattern (using since only 1 player in scene) -> instance property can use { get; set; } shorthand.
     public static Player Instance { get; private set; }
@@ -206,6 +207,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null)
+        {
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject()

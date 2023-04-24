@@ -8,9 +8,12 @@ using System;
 
 public class CuttingCounter : BaseCounter, IHasProgress
 {
-    // event listeners when the progress of the counters changes.
+    // static listener for cut sounds
+    public static event EventHandler OnAnyCut;
+
+    // these events are specific to the instances of each counter.
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
-    public event EventHandler OnCut; // event listener when player cuts the kitchen object.
+    public event EventHandler OnCut;
 
     [SerializeField]
     private CuttingRecipeSO[] cuttingRecipeSOArray;
@@ -29,9 +32,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
                     cuttingProgress = 0;
 
                     // update the progress bar.
-                    CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(
-                        GetKitchenObject().GetKitchenObjectSO()
-                    );
+                    CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
                     OnProgressChanged?.Invoke(
                         this,
                         new IHasProgress.OnProgressChangedEventArgs
@@ -76,6 +77,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             cuttingProgress++;
 
             OnCut?.Invoke(this, EventArgs.Empty);
+            OnAnyCut?.Invoke(this, EventArgs.Empty);
 
             // get the cutting recipe for the input kitchen object.
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
