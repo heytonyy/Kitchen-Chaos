@@ -17,19 +17,15 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     }
     public event EventHandler OnPickedSomething;
 
-    // Singleton pattern (using since only 1 player in scene) -> instance property can use { get; set; } shorthand.
+    // Singleton pattern: can use { get; private set; } shorthand.
     public static Player Instance { get; private set; }
-    // player input reference.
     [SerializeField] private GameInput gameInput;
 
-    // KitchenObjectHoldPoint -> Transform for holding kitchenObject.
-    [SerializeField] private Transform kitchenObjectHoldPoint;
     private KitchenObject kitchenObject;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
 
-    // BaseCounter -> Counter that player is currently interacting with.
     private BaseCounter selectedCounter;
-    // counter layer mask -> for raycasting groups of counters.
-    [SerializeField] private LayerMask counterLayerMask;
+    [SerializeField] private LayerMask counterLayerMask; // for raycasting groups of counters.
 
     [SerializeField] private float moveSpeed = 7f;
     private bool isWalking;
@@ -53,6 +49,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     // Subscribe to the OnInteractAction event.
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying()) return;
+
         if (selectedCounter != null)
         {
             selectedCounter.Interact(this);
@@ -62,6 +60,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     // Subscribe to the OnInteractAlternateAction event.
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying()) return;
+
         if (selectedCounter != null)
         {
             selectedCounter.InteractAlternate(this);
@@ -148,8 +148,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             // Attempt only X movement
             Vector3 moveDirectionX = new Vector3(moveDirection.x, 0F, 0f).normalized;
-            // moveDirection.x != 0 -> to make player still rotate when moving diagonally
-            canMove = moveDirection.x != 0
+            canMove = (moveDirection.x < -0.5f || moveDirection.x > 0.5f)
                 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionX, moveDistance);
 
             if (canMove)
@@ -162,8 +161,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
                 // Cannot move on the X
                 // Attempt only Z movement
                 Vector3 moveDirectionZ = new Vector3(0f, 0F, moveDirection.z);
-                // moveDirection.z != 0 -> to make player still rotate when moving diagonally
-                canMove = moveDirection.z != 0
+                canMove = (moveDirection.z < -0.5f || moveDirection.z > 0.5f)
                     && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionZ, moveDistance);
 
                 if (canMove)

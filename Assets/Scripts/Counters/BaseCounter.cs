@@ -9,9 +9,12 @@ using System;
 public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 {
     public static event EventHandler OnAnyObjectPlacedHere;
-    private KitchenObject kitchenObject;
+    public static void ResetStaticData()
+    {
+        OnAnyObjectPlacedHere = null;
+    }
 
-    // reference point for instantiating kitchenObject.
+    private KitchenObject kitchenObject;
     [SerializeField] private Transform counterTopPoint;
 
     // Interact/InteractAlternate methods are overridden in child classes.

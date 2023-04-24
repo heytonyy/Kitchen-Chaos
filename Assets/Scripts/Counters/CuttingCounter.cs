@@ -11,6 +11,11 @@ public class CuttingCounter : BaseCounter, IHasProgress
     // static listener for cut sounds
     public static event EventHandler OnAnyCut;
 
+    new public static void ResetStaticData()
+    {
+        OnAnyCut = null;
+    }
+
     // these events are specific to the instances of each counter.
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler OnCut;
